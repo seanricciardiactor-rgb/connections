@@ -58,7 +58,7 @@
       z-index:5;
     }
     .leftSlot{ width:42px; }
-    .rightSlot{ width:42px; } /* spacer */
+    .rightSlot{ width:42px; }
     .centerIcons{
       display:flex;
       gap:16px;
@@ -82,15 +82,7 @@
       text-align:center;
       font-size:22px;
       font-weight:520;
-      margin:14px 0 6px;
-    }
-    .dateLine{
-      text-align:center;
-      font-size:13px;
-      font-weight:600;
-      color:#6b6b6b;
-      margin:0 0 12px;
-      letter-spacing:.2px;
+      margin:14px 0 12px;
     }
 
     /* Solved groups */
@@ -105,7 +97,6 @@
       padding:12px;
       border:1px solid rgba(0,0,0,.06);
       text-align:center;
-      transform: translateY(0);
     }
     .solvedGroup.lockIn{
       animation: lockIn 260ms ease-out both;
@@ -143,29 +134,23 @@
       background:var(--tile);
       color:var(--tile-text);
       border-radius:10px;
-
       height:60px;
       padding:6px;
-
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
-
       font-weight:800;
       font-size:10.6px;
       letter-spacing:0.45px;
       text-transform:uppercase;
       line-height:1.05;
-
       cursor:pointer;
       user-select:none;
-
       word-break:keep-all;
       overflow-wrap:normal;
       hyphens:none;
       white-space:normal;
-
       transition: transform 140ms ease, opacity 140ms ease, background-color 120ms ease, color 120ms ease, border-color 120ms ease;
       -webkit-tap-highlight-color: transparent;
     }
@@ -196,7 +181,6 @@
     }
     .dot.spent{ opacity:.15; }
 
-    /* Buttons row - smaller */
     .controls{
       display:flex;
       gap:10px;
@@ -242,7 +226,6 @@
     }
     .reveal.show{ display:block; }
 
-    /* Confetti canvas overlay */
     #confetti{
       position:fixed;
       inset:0;
@@ -265,61 +248,37 @@
 <canvas id="confetti" aria-hidden="true"></canvas>
 
 <main class="page">
-  <header class="topbar" aria-label="Header">
+  <header class="topbar">
     <div class="leftSlot">
-      <button class="iconBtn" aria-label="Menu" type="button" onclick="noop()">
-        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="3" y="6" width="18" height="2" fill="#111"/>
-          <rect x="3" y="11" width="18" height="2" fill="#111"/>
-          <rect x="3" y="16" width="18" height="2" fill="#111"/>
-        </svg>
+      <button class="iconBtn" type="button">
+        <svg width="24" height="24"><rect x="3" y="6" width="18" height="2"/><rect x="3" y="11" width="18" height="2"/><rect x="3" y="16" width="18" height="2"/></svg>
       </button>
     </div>
-
-    <div class="centerIcons" aria-label="Icons">
-      <button class="iconBtn" aria-label="Hints" type="button" onclick="noop()">
-        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M9 21h6v-1H9v1zm3-20a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3.3A7 7 0 0 0 12 1zm3 11.9-.8.6V16H9.8v-2.5l-.8-.6A5.5 5.5 0 1 1 15 12.9z" fill="#111"/>
-        </svg>
-      </button>
-      <button class="iconBtn" aria-label="Stats" type="button" onclick="noop()">
-        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="4" y="12" width="3" height="8" fill="#111"/>
-          <rect x="10.5" y="9" width="3" height="11" fill="#111"/>
-          <rect x="17" y="6" width="3" height="14" fill="#111"/>
-        </svg>
-      </button>
-      <button class="iconBtn" aria-label="Help" type="button" onclick="noop()">
-        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="10" fill="none" stroke="#111" stroke-width="2"/>
-          <path d="M9.8 9.2A2.4 2.4 0 0 1 12 7.8c1.3 0 2.4.9 2.4 2.2 0 1.8-2 1.9-2 3.6" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="12" cy="17.6" r="1.2" fill="#111"/>
-        </svg>
-      </button>
+    <div class="centerIcons">
+      <button class="iconBtn"><svg width="22" height="22"><circle cx="11" cy="11" r="10" fill="none" stroke="#111" stroke-width="2"/></svg></button>
+      <button class="iconBtn"><svg width="22" height="22"><rect x="4" y="12" width="3" height="8"/><rect x="10.5" y="9" width="3" height="11"/><rect x="17" y="6" width="3" height="14"/></svg></button>
+      <button class="iconBtn"><svg width="22" height="22"><circle cx="11" cy="11" r="10" fill="none" stroke="#111" stroke-width="2"/></svg></button>
     </div>
-
-    <div class="rightSlot" aria-hidden="true"></div>
+    <div class="rightSlot"></div>
   </header>
 
   <div class="instruction">Create four groups of four!</div>
-  <div class="dateLine" id="dateLine"></div>
 
-  <section class="solvedArea" id="solvedArea" aria-label="Solved groups"></section>
+  <section class="solvedArea" id="solvedArea"></section>
+  <section class="grid" id="grid"></section>
 
-  <section class="grid" id="grid" aria-label="Word grid"></section>
-
-  <div class="mistakesRow" aria-label="Mistakes remaining">
+  <div class="mistakesRow">
     <div>Mistakes Remaining:</div>
     <div class="dots" id="dots"></div>
   </div>
 
-  <div class="controls" aria-label="Controls">
-    <button class="btn" id="shuffleBtn" type="button">Shuffle</button>
-    <button class="btn" id="clearBtn" type="button" disabled>Deselect All</button>
-    <button class="btn" id="submitBtn" type="button" disabled>Submit</button>
+  <div class="controls">
+    <button class="btn" id="shuffleBtn">Shuffle</button>
+    <button class="btn" id="clearBtn" disabled>Deselect All</button>
+    <button class="btn" id="submitBtn" disabled>Submit</button>
   </div>
 
-  <div class="toast" id="toast" aria-live="polite"></div>
+  <div class="toast" id="toast"></div>
 
   <div class="reveal" id="reveal">
     <h2>💍 Will you marry me?</h2>
@@ -328,8 +287,6 @@
 </main>
 
 <script>
-function noop(){}
-
 const CATEGORIES=[
  {color:"yellow",title:"Valentine’s Day",words:["Heart","Red","Chocolate","Flowers"]},
  {color:"green",title:"2nd Date Movies",words:["Goofy","Jerk","Spaceballs","Cats Don’t Dance"]},
@@ -347,27 +304,21 @@ const grid=document.getElementById("grid"),
       clearBtn=document.getElementById("clearBtn"),
       submitBtn=document.getElementById("submitBtn"),
       toast=document.getElementById("toast"),
-      reveal=document.getElementById("reveal"),
-      dateLine=document.getElementById("dateLine");
-
-function setDateLine(){
-  // Looks like a daily date line; uses device date for realism
-  const d = new Date();
-  const fmt = new Intl.DateTimeFormat(undefined, { weekday:"long", year:"numeric", month:"long", day:"numeric" });
-  dateLine.textContent = fmt.format(d);
-}
-
-function haptic(pattern){
-  // Works on many Android devices; iOS Safari typically ignores
-  try{
-    if (navigator.vibrate) navigator.vibrate(pattern);
-  }catch(e){}
-}
+      reveal=document.getElementById("reveal");
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 shuffle(remaining);
 
-function renderGrid(){
+function render(){
+  solvedArea.innerHTML="";
+  solved.forEach(c=>{
+    const box=document.createElement("div");
+    box.className="solvedGroup";
+    box.style.background=COLORS[c.color];
+    box.innerHTML=`<div class="solvedTitle">${c.title}</div><div class="solvedList">${c.words.join(", ")}</div>`;
+    solvedArea.appendChild(box);
+  });
+
   grid.innerHTML="";
   remaining.forEach(o=>{
     const b=document.createElement("button");
@@ -376,181 +327,37 @@ function renderGrid(){
     b.onclick=()=>toggle(o.w);
     grid.appendChild(b);
   });
-}
-function renderDots(){
+
   dots.innerHTML="";
   for(let i=0;i<4;i++){
     const d=document.createElement("div");
     d.className="dot"+(i<mistakes?" spent":"");
     dots.appendChild(d);
   }
-}
-function renderControls(){
+
   clearBtn.disabled=selected.size===0;
   submitBtn.disabled=selected.size!==4;
 }
-function renderSolved(newlyAddedTitle=null){
-  solvedArea.innerHTML="";
-  solved.forEach(c=>{
-    const box=document.createElement("div");
-    box.className="solvedGroup";
-    if (newlyAddedTitle && c.title===newlyAddedTitle) box.classList.add("lockIn");
-    box.style.background=COLORS[c.color] || "#eee";
-    box.innerHTML=`<div class="solvedTitle">${c.title}</div>
-                   <div class="solvedList">${c.words.join(", ")}</div>`;
-    solvedArea.appendChild(box);
-  });
-}
-function renderAll(newlyAddedTitle=null){
-  renderSolved(newlyAddedTitle);
-  renderGrid();
-  renderDots();
-  renderControls();
-}
 
 function toggle(w){
-  if(selected.has(w)) selected.delete(w);
-  else if(selected.size<4) selected.add(w);
-  toast.textContent="";
-  // small haptic on selection toggle
-  haptic(10);
-  for (const btn of grid.querySelectorAll("button.tile")){
-    btn.classList.toggle("selected", selected.has(btn.textContent));
-  }
-  renderControls();
+  selected.has(w)?selected.delete(w):selected.size<4&&selected.add(w);
+  render();
 }
 
-/* Confetti */
-const confettiCanvas = document.getElementById("confetti");
-const ctx = confettiCanvas.getContext("2d");
-let confettiParticles = [];
-let confettiRAF = null;
-
-function resizeConfetti(){
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  confettiCanvas.width = Math.floor(window.innerWidth * dpr);
-  confettiCanvas.height = Math.floor(window.innerHeight * dpr);
-  confettiCanvas.style.width = window.innerWidth + "px";
-  confettiCanvas.style.height = window.innerHeight + "px";
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-}
-window.addEventListener("resize", resizeConfetti);
-resizeConfetti();
-
-function launchConfetti(){
-  confettiParticles = [];
-  const count = 160;
-  const w = window.innerWidth, h = window.innerHeight;
-  for (let i=0;i<count;i++){
-    confettiParticles.push({
-      x: Math.random()*w,
-      y: -20 - Math.random()*h*0.2,
-      vx: (Math.random()-0.5)*2.5,
-      vy: 2.5 + Math.random()*3.0,
-      r: 3 + Math.random()*4,
-      rot: Math.random()*Math.PI,
-      vr: (Math.random()-0.5)*0.2,
-      life: 0,
-      max: 120 + Math.random()*60,
-      color: ["#f5df6b","#bfe3a8","#a9d6f5","#d6b0f3","#111111"][Math.floor(Math.random()*5)]
-    });
-  }
-
-  if (confettiRAF) cancelAnimationFrame(confettiRAF);
-  tickConfetti();
-  // stop after ~2.5s
-  setTimeout(()=>{ confettiParticles=[]; }, 2600);
-}
-
-function tickConfetti(){
-  ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-  const w = window.innerWidth, h = window.innerHeight;
-  confettiParticles = confettiParticles.filter(p => p.life < p.max && p.y < h + 30);
-  for (const p of confettiParticles){
-    p.life++;
-    p.x += p.vx;
-    p.y += p.vy;
-    p.rot += p.vr;
-    // tiny sway
-    p.x += Math.sin((p.life/10)+p.rot)*0.6;
-
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rot);
-    ctx.fillStyle = p.color;
-    ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
-    ctx.restore();
-  }
-  if (confettiParticles.length){
-    confettiRAF = requestAnimationFrame(tickConfetti);
-  }else{
-    ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-  }
-}
-
-document.getElementById("shuffleBtn").onclick=()=>{
-  shuffle(remaining);
-  toast.textContent="";
-  haptic(15);
-  renderGrid();
-  renderControls();
-};
-document.getElementById("clearBtn").onclick=()=>{
-  selected.clear();
-  toast.textContent="";
-  haptic(15);
-  renderGrid();
-  renderControls();
-};
-
-document.getElementById("submitBtn").onclick=async ()=>{
-  if(selected.size!==4) return;
+document.getElementById("shuffleBtn").onclick=()=>{shuffle(remaining);render()};
+document.getElementById("clearBtn").onclick=()=>{selected.clear();render()};
+document.getElementById("submitBtn").onclick=()=>{
   const pick=[...selected];
   const cat=CATEGORIES.find(c=>pick.every(w=>c.words.includes(w)));
-
-  if(!cat){
-    mistakes=Math.min(4, mistakes+1);
-    toast.textContent="Not quite.";
-    haptic([20,30,20]);
-    selected.clear();
-    renderDots();
-    renderGrid();
-    renderControls();
-    return;
-  }
-
-  if(solved.some(s=>s.title===cat.title)){
-    selected.clear();
-    renderGrid();
-    renderControls();
-    return;
-  }
-
-  // haptic on correct submit
-  haptic([20,20,30]);
-
-  const selectedButtons=[...grid.querySelectorAll("button.tile")].filter(b=>selected.has(b.textContent));
-  selectedButtons.forEach(b=>b.classList.add("leaving"));
-  await new Promise(r=>setTimeout(r, 160));
-
+  if(!cat){mistakes++;selected.clear();render();return;}
   solved.push(cat);
   remaining=remaining.filter(o=>!cat.words.includes(o.w));
   selected.clear();
-  toast.textContent="Correct!";
-
-  renderAll(cat.title);
-
-  if(solved.length===4){
-    reveal.classList.add("show");
-    toast.textContent="";
-    // bigger celebration haptic + confetti
-    haptic([30,30,60]);
-    launchConfetti();
-  }
+  render();
+  if(solved.length===4) reveal.classList.add("show");
 };
 
-setDateLine();
-renderAll();
+render();
 </script>
 </body>
 </html>
