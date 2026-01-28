@@ -14,13 +14,17 @@
       --selected-bg:#5f5f5f;
       --selected-text:#fff;
       --muted:#6b6b6b;
+
       --btn-border:#111;
       --btn-disabled-border:#d6d6d6;
       --btn-disabled-text:#9a9a9a;
+
+      /* category colors */
       --yellow:#f5df6b;
       --green:#bfe3a8;
       --blue:#a9d6f5;
       --purple:#d6b0f3;
+
       --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
     }
 
@@ -41,6 +45,7 @@
       padding:0 14px 18px;
     }
 
+    /* Header (hamburger left, 3 icons center) */
     .topbar{
       height:54px;
       display:flex;
@@ -53,14 +58,35 @@
       background:#fff;
       z-index:5;
     }
+    .leftSlot{ width:42px; }
+    .rightSlot{ width:42px; } /* spacer to keep center icons centered */
+    .centerIcons{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:center;
+      flex:1;
+    }
+    .iconBtn{
+      width:42px;height:42px;
+      display:grid;place-items:center;
+      border:0;
+      background:transparent;
+      padding:0;
+      border-radius:10px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .iconBtn:active{ background:#f2f2f2; }
+    svg{ display:block; }
 
     .instruction{
       text-align:center;
       font-size:22px;
       font-weight:520;
-      margin:18px 0 14px;
+      margin:14px 0 12px;
     }
 
+    /* Solved groups */
     .solvedArea{
       display:flex;
       flex-direction:column;
@@ -72,6 +98,15 @@
       padding:12px;
       border:1px solid rgba(0,0,0,.06);
       text-align:center;
+      transform: translateY(0);
+    }
+    .solvedGroup.lockIn{
+      animation: lockIn 260ms ease-out both;
+    }
+    @keyframes lockIn{
+      0%   { opacity:0; transform: translateY(12px) scale(.985); }
+      60%  { opacity:1; transform: translateY(-2px) scale(1.005); }
+      100% { opacity:1; transform: translateY(0) scale(1); }
     }
     .solvedTitle{
       font-weight:900;
@@ -85,8 +120,10 @@
       text-transform:uppercase;
       letter-spacing:.5px;
       font-size:12.5px;
+      line-height:1.15;
     }
 
+    /* Grid */
     .grid{
       display:grid;
       grid-template-columns:repeat(4,1fr);
@@ -99,28 +136,42 @@
       background:var(--tile);
       color:var(--tile-text);
       border-radius:10px;
+
       height:60px;
       padding:6px;
+
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
+
       font-weight:800;
-      font-size:10.6px; /* reduced slightly to keep long words on one line */
+      font-size:10.6px;
       letter-spacing:0.45px;
       text-transform:uppercase;
       line-height:1.05;
+
       cursor:pointer;
       user-select:none;
+
       word-break:keep-all;
       overflow-wrap:normal;
       hyphens:none;
       white-space:normal;
+
+      transition: transform 140ms ease, opacity 140ms ease, background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+      -webkit-tap-highlight-color: transparent;
     }
     button.tile.selected{
       background:var(--selected-bg);
       color:var(--selected-text);
       border-color:var(--selected-bg);
+      transform: translateY(-1px);
+    }
+    button.tile.leaving{
+      opacity:0;
+      transform: translateY(10px) scale(.98);
+      pointer-events:none;
     }
 
     .mistakesRow{
@@ -138,22 +189,39 @@
     }
     .dot.spent{ opacity:.15; }
 
+    /* Buttons row - smaller, all black/gray (no blue) */
     .controls{
       display:flex;
-      gap:12px;
+      gap:10px;
+      justify-content:space-between;
+      margin-top:2px;
     }
     .btn{
       flex:1;
       border-radius:999px;
-      padding:12px 10px;
-      font-size:16px;
+      padding:10px 10px;     /* smaller */
+      font-size:14.5px;      /* smaller */
       font-weight:600;
       border:2px solid #111;
       background:#fff;
+      color:#111;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn:disabled{
-      border-color:#d6d6d6;
-      color:#9a9a9a;
+      border-color:var(--btn-disabled-border);
+      color:var(--btn-disabled-text);
+      cursor:not-allowed;
+      background:#fff;
+    }
+
+    .toast{
+      margin-top:10px;
+      min-height:20px;
+      text-align:center;
+      color:var(--muted);
+      font-size:15px;
+      font-weight:600;
     }
 
     .reveal{
@@ -165,28 +233,85 @@
       text-align:center;
     }
     .reveal.show{ display:block; }
+
+    @media (max-width:390px){
+      .instruction{ font-size:20px; }
+      button.tile{ height:56px; font-size:10.4px; }
+      .btn{ font-size:14px; padding:9px 8px; }
+      .mistakesRow{ font-size:17px; }
+      .dot{ width:13px; height:13px; }
+    }
   </style>
 </head>
 <body>
 <main class="page">
+  <header class="topbar" aria-label="Header">
+    <div class="leftSlot">
+      <button class="iconBtn" aria-label="Menu" type="button" onclick="noop()">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="6" width="18" height="2" fill="#111"/>
+          <rect x="3" y="11" width="18" height="2" fill="#111"/>
+          <rect x="3" y="16" width="18" height="2" fill="#111"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="centerIcons" aria-label="Icons">
+      <!-- lightbulb -->
+      <button class="iconBtn" aria-label="Hints" type="button" onclick="noop()">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 21h6v-1H9v1zm3-20a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3.3A7 7 0 0 0 12 1zm3 11.9-.8.6V16H9.8v-2.5l-.8-.6A5.5 5.5 0 1 1 15 12.9z" fill="#111"/>
+        </svg>
+      </button>
+      <!-- stats -->
+      <button class="iconBtn" aria-label="Stats" type="button" onclick="noop()">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="4" y="12" width="3" height="8" fill="#111"/>
+          <rect x="10.5" y="9" width="3" height="11" fill="#111"/>
+          <rect x="17" y="6" width="3" height="14" fill="#111"/>
+        </svg>
+      </button>
+      <!-- help -->
+      <button class="iconBtn" aria-label="Help" type="button" onclick="noop()">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="#111" stroke-width="2"/>
+          <path d="M9.8 9.2A2.4 2.4 0 0 1 12 7.8c1.3 0 2.4.9 2.4 2.2 0 1.8-2 1.9-2 3.6" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="17.6" r="1.2" fill="#111"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="rightSlot" aria-hidden="true"></div>
+  </header>
+
   <div class="instruction">Create four groups of four!</div>
-  <section class="solvedArea" id="solvedArea"></section>
-  <section class="grid" id="grid"></section>
-  <div class="mistakesRow">
+
+  <section class="solvedArea" id="solvedArea" aria-label="Solved groups"></section>
+
+  <section class="grid" id="grid" aria-label="Word grid"></section>
+
+  <div class="mistakesRow" aria-label="Mistakes remaining">
     <div>Mistakes Remaining:</div>
     <div class="dots" id="dots"></div>
   </div>
-  <div class="controls">
-    <button class="btn" id="shuffleBtn">Shuffle</button>
-    <button class="btn" id="clearBtn" disabled>Deselect All</button>
-    <button class="btn" id="submitBtn" disabled>Submit</button>
+
+  <div class="controls" aria-label="Controls">
+    <button class="btn" id="shuffleBtn" type="button">Shuffle</button>
+    <button class="btn" id="clearBtn" type="button" disabled>Deselect All</button>
+    <button class="btn" id="submitBtn" type="button" disabled>Submit</button>
   </div>
+
+  <div class="toast" id="toast" aria-live="polite"></div>
+
   <div class="reveal" id="reveal">
     <h2>💍 Will you marry me?</h2>
+    <p style="margin:6px 0 0;color:#6b6b6b;font-weight:650;">(Look up at me.)</p>
   </div>
 </main>
 
 <script>
+function noop(){}
+
 const CATEGORIES=[
  {color:"yellow",title:"Valentine’s Day",words:["Heart","Red","Chocolate","Flowers"]},
  {color:"green",title:"2nd Date Movies",words:["Goofy","Jerk","Spaceballs","Cats Don’t Dance"]},
@@ -194,19 +319,22 @@ const CATEGORIES=[
  {color:"purple",title:"So Much",words:["Will","You","Marry","Me"]}
 ];
 const COLORS={yellow:"#f5df6b",green:"#bfe3a8",blue:"#a9d6f5",purple:"#d6b0f3"};
+
 let remaining=CATEGORIES.flatMap(c=>c.words.map(w=>({w,c})));
 let selected=new Set(), solved=[], mistakes=0;
+
 const grid=document.getElementById("grid"),
       solvedArea=document.getElementById("solvedArea"),
       dots=document.getElementById("dots"),
       clearBtn=document.getElementById("clearBtn"),
       submitBtn=document.getElementById("submitBtn"),
+      toast=document.getElementById("toast"),
       reveal=document.getElementById("reveal");
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 shuffle(remaining);
 
-function render(){
+function renderGrid(){
   grid.innerHTML="";
   remaining.forEach(o=>{
     const b=document.createElement("button");
@@ -215,44 +343,101 @@ function render(){
     b.onclick=()=>toggle(o.w);
     grid.appendChild(b);
   });
+}
+function renderDots(){
   dots.innerHTML="";
   for(let i=0;i<4;i++){
     const d=document.createElement("div");
     d.className="dot"+(i<mistakes?" spent":"");
     dots.appendChild(d);
   }
+}
+function renderControls(){
   clearBtn.disabled=selected.size===0;
   submitBtn.disabled=selected.size!==4;
 }
-function renderSolved(){
+function renderSolved(newlyAddedTitle=null){
   solvedArea.innerHTML="";
   solved.forEach(c=>{
     const box=document.createElement("div");
     box.className="solvedGroup";
-    box.style.background=COLORS[c.color];
+    if (newlyAddedTitle && c.title===newlyAddedTitle) box.classList.add("lockIn");
+    box.style.background=COLORS[c.color] || "#eee";
     box.innerHTML=`<div class="solvedTitle">${c.title}</div>
                    <div class="solvedList">${c.words.join(", ")}</div>`;
     solvedArea.appendChild(box);
   });
 }
-function toggle(w){
-  selected.has(w)?selected.delete(w):selected.size<4&&selected.add(w);
-  render();
+function renderAll(newlyAddedTitle=null){
+  renderSolved(newlyAddedTitle);
+  renderGrid();
+  renderDots();
+  renderControls();
 }
-document.getElementById("clearBtn").onclick=()=>{selected.clear();render()};
-document.getElementById("submitBtn").onclick=()=>{
+
+function toggle(w){
+  if(selected.has(w)) selected.delete(w);
+  else if(selected.size<4) selected.add(w);
+  toast.textContent="";
+  for (const btn of grid.querySelectorAll("button.tile")){
+    btn.classList.toggle("selected", selected.has(btn.textContent));
+  }
+  renderControls();
+}
+
+document.getElementById("shuffleBtn").onclick=()=>{
+  shuffle(remaining);
+  toast.textContent="";
+  renderGrid();
+  renderControls();
+};
+document.getElementById("clearBtn").onclick=()=>{
+  selected.clear();
+  toast.textContent="";
+  renderGrid();
+  renderControls();
+};
+
+document.getElementById("submitBtn").onclick=async ()=>{
+  if(selected.size!==4) return;
   const pick=[...selected];
   const cat=CATEGORIES.find(c=>pick.every(w=>c.words.includes(w)));
-  if(!cat){mistakes++;selected.clear();render();return;}
+
+  if(!cat){
+    mistakes=Math.min(4, mistakes+1);
+    toast.textContent="Not quite.";
+    selected.clear();
+    renderDots();
+    renderGrid();
+    renderControls();
+    return;
+  }
+
+  if(solved.some(s=>s.title===cat.title)){
+    selected.clear();
+    renderGrid();
+    renderControls();
+    return;
+  }
+
+  const selectedButtons=[...grid.querySelectorAll("button.tile")].filter(b=>selected.has(b.textContent));
+  selectedButtons.forEach(b=>b.classList.add("leaving"));
+  await new Promise(r=>setTimeout(r, 160));
+
   solved.push(cat);
   remaining=remaining.filter(o=>!cat.words.includes(o.w));
   selected.clear();
-  renderSolved();
-  render();
-  if(solved.length===4)reveal.classList.add("show");
+  toast.textContent="Correct!";
+
+  renderAll(cat.title);
+
+  if(solved.length===4){
+    reveal.classList.add("show");
+    toast.textContent="";
+  }
 };
-document.getElementById("shuffleBtn").onclick=()=>{shuffle(remaining);render()};
-render();
+
+renderAll();
 </script>
 </body>
 </html>
