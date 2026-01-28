@@ -160,23 +160,69 @@
       stroke:#111 !important;
     }
 
-  </style>
+  
+        .subscribeBtn:active{ background:#f2f2f2; }
+
+    /* Header icons outline-only (no fills) */
+    header svg * {
+      fill: none !important;
+      stroke: #111 !important;
+      stroke-width: 2 !important;
+    }
+
+</style>
 </head>
 <body>
 <canvas id="confetti"></canvas>
 
 <main class="page">
-  <header class="topbar">
+  
+  <header class="topbar" aria-label="Header">
     <div class="leftSlot">
-      <button class="iconBtn">☰</button>
+      <button class="iconBtn" aria-label="Menu" type="button" onclick="noop()">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="6" width="18" height="2" fill="#111"></rect>
+          <rect x="3" y="11" width="18" height="2" fill="#111"></rect>
+          <rect x="3" y="16" width="18" height="2" fill="#111"></rect>
+        </svg>
+      </button>
     </div>
-    <div class="centerIcons">
-      <button class="iconBtn">💡</button>
-      <button class="iconBtn">📊</button>
-      <button class="iconBtn">?</button>
+
+    
+    <div class="centerIcons" aria-label="Icons">
+      <!-- Lightbulb outline -->
+      <button class="iconBtn" aria-label="Hints" type="button">
+        <svg width="26" height="26" viewBox="0 0 24 24">
+          <path d="M9 18h6" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M10 22h4" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M8.5 14.8c-1.7-1.2-2.8-3.1-2.8-5.3A6.3 6.3 0 0 1 12 3.2a6.3 6.3 0 0 1 6.3 6.3c0 2.2-1.1 4.1-2.8 5.3-.7.5-1.2 1.2-1.2 2V18H9.7v-1.2c0-.8-.5-1.5-1.2-2Z"
+                stroke="#111" stroke-width="2" fill="none" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <!-- Stats outline -->
+      <button class="iconBtn" aria-label="Stats" type="button">
+        <svg width="26" height="26" viewBox="0 0 24 24">
+          <rect x="5" y="11" width="3" height="8" rx="0.5" fill="none" stroke="#111" stroke-width="2"/>
+          <rect x="10.5" y="7" width="3" height="12" rx="0.5" fill="none" stroke="#111" stroke-width="2"/>
+          <rect x="16" y="4" width="3" height="15" rx="0.5" fill="none" stroke="#111" stroke-width="2"/>
+        </svg>
+      </button>
+
+      <!-- Help outline -->
+      <button class="iconBtn" aria-label="Help" type="button">
+        <svg width="26" height="26" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" fill="none" stroke="#111" stroke-width="2"/>
+          <path d="M10.3 9.6A2.2 2.2 0 0 1 12.1 8.5c1.2 0 2.2.8 2.2 2 0 1.6-1.9 1.7-1.9 3.2"
+                fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="12" cy="17.3" r="1.1" fill="#111"/>
+        </svg>
+      </button>
     </div>
+
     <div class="rightSlot"></div>
   </header>
+
 
   <div class="instruction">Create four groups of four!</div>
 
