@@ -2,52 +2,283 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Connections</title>
+  <meta name="theme-color" content="#f6f6f4">
   <style>
     :root{
       --bg:#f6f6f4;
       --card:#ffffff;
       --text:#1a1a1a;
-      --muted:#666;
-      --border:#d9d9d9;
+      --muted:#6b6b6b;
+      --border:#dbdbdb;
+
       --yellow:#f5df6b;
       --green:#bfe3a8;
       --blue:#a9d6f5;
       --purple:#d6b0f3;
+
       --tile:#efefee;
       --tileText:#111;
       --selected:#111;
       --selectedText:#fff;
-      --radius:14px;
+
+      --shadow: 0 1px 0 rgba(0,0,0,.06);
+      --radius: 14px;
+      --tileRadius: 12px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
+
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui;background:var(--bg);display:flex;justify-content:center}
-    .wrap{width:min(760px,100%);padding:16px}
-    header{text-align:center;margin-bottom:10px}
-    h1{margin:0;font-size:22px}
-    .sub{color:#666;font-size:13px}
-    .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px}
-    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    button{padding:14px;border-radius:12px;border:1px solid #ccc;font-weight:700;text-transform:uppercase}
-    button.selected{background:#111;color:#fff}
-    .controls{display:flex;justify-content:space-between;margin-top:12px}
-    .reveal{display:none;margin-top:16px;text-align:center}
-    .reveal.show{display:block}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--text);
+      display:flex;
+      justify-content:center;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:420px; /* mobile-first */
+      padding:12px 12px 32px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:6px 4px 10px;
+      position:sticky;
+      top:0;
+      background:var(--bg);
+      z-index:5;
+    }
+    header .left, header .right{
+      display:flex; gap:8px; align-items:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill{
+      border:1px solid var(--border);
+      background:#fff;
+      padding:7px 9px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      user-select:none;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .iconPill{
+      width:32px;height:32px;
+      display:grid;place-items:center;
+      padding:0;
+      font-weight:900;
+    }
+    h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:.4px;
+      font-weight:800;
+    }
+    .sub{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:12px;
+    }
+
+    .topSolved{
+      display:grid;
+      gap:8px;
+      margin-bottom:10px;
+    }
+    .group{
+      border-radius:12px;
+      padding:10px 10px 8px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .group .label{
+      font-weight:900;
+      text-transform:uppercase;
+      font-size:11px;
+      letter-spacing:.8px;
+    }
+    .group .title{
+      font-size:15px;
+      font-weight:800;
+    }
+    .group .words{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .chip{
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(0,0,0,.10);
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:8px;
+    }
+
+    button.tile{
+      border:1px solid rgba(0,0,0,.10);
+      background:var(--tile);
+      color:var(--tileText);
+      border-radius:var(--tileRadius);
+      padding:14px 6px;
+      min-height:52px;
+      font-weight:900;
+      font-size:12px;
+      letter-spacing:.3px;
+      text-transform:uppercase;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button.tile.selected{
+      background:var(--selected);
+      color:var(--selectedText);
+      border-color:rgba(0,0,0,.35);
+    }
+
+    .controls{
+      display:flex;
+      justify-content:space-between;
+      margin-top:10px;
+      gap:8px;
+    }
+    .btn{
+      flex:1;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:999px;
+      padding:9px 10px;
+      font-weight:800;
+      font-size:13px;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+    }
+    .btn.primary{
+      background:#111;
+      color:#fff;
+      border-color:#111;
+    }
+    .btn.small{
+      flex:0 0 auto;
+      padding:9px 12px;
+    }
+
+    .statusRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:8px;
+      gap:8px;
+    }
+    .status{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:650;
+    }
+    .mistakes{
+      display:flex; align-items:center; gap:6px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:750;
+    }
+    .dots{ display:flex; gap:5px; }
+    .dot{
+      width:9px;height:9px;border-radius:50%;
+      border:1px solid rgba(0,0,0,.25);
+      background:#fff;
+    }
+    .dot.used{ background:#111; border-color:#111; }
+
+    .toast{
+      margin-top:10px;
+      font-size:13px;
+      font-weight:750;
+      display:none;
+      padding:8px 10px;
+      background:#fff7cc;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:12px;
+    }
+    .toast.show{ display:block; }
+
+    .reveal{
+      margin-top:14px;
+      padding:16px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+      display:none;
+      text-align:center;
+    }
+    .reveal.show{ display:block; }
+    .reveal h2{
+      margin:0 0 6px;
+      font-size:22px;
+    }
   </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>Connections</h1>
-    <div class="sub" id="date"></div>
-  </header>
-  <div class="card">
-    <div class="grid" id="grid"></div>
-    <div class="controls">
-      <button onclick="reset()">New puzzle</button>
-      <button onclick="submit()">Submit</button>
+    <div class="left">
+      <div class="pill">Games</div>
     </div>
+    <div style="text-align:center;">
+      <h1>Connections</h1>
+      <div class="sub" id="dateLine"></div>
+    </div>
+    <div class="right">
+      <div class="pill">Streak: 1</div>
+      <div class="pill iconPill">?</div>
+    </div>
+  </header>
+
+  <div class="card" id="card">
+    <div class="topSolved" id="solved"></div>
+    <div class="grid" id="grid"></div>
+
+    <div class="controls">
+      <button class="btn small" id="shuffleBtn">Shuffle</button>
+      <button class="btn small" id="deselectBtn">Clear</button>
+      <button class="btn primary" id="submitBtn" disabled>Submit</button>
+    </div>
+
+    <div class="statusRow">
+      <div class="status" id="status">Select 4 words</div>
+      <div class="mistakes">
+        Mistakes
+        <div class="dots" id="dots"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
     <div class="reveal" id="reveal">
       <h2>💍 Will you marry me?</h2>
     </div>
@@ -55,60 +286,112 @@
 </div>
 
 <script>
-document.getElementById("date").textContent =
+const CATEGORIES = [
+  { color:"yellow", title:"Valentine’s Day", words:["Heart","Red","Chocolate","Flowers"] },
+  { color:"green", title:"2nd Date Movies", words:["Goofy","Jerk","Spaceballs","Cats Don’t Dance"] },
+  { color:"blue", title:"Jesus Meals", words:["Diet Coke","Movie Pretzel","Diet Ginger Ale","Eggplant Parm"] },
+  { color:"purple", title:"So Much", words:["Will","You","Marry","Me"] }
+];
+const COLORS = {
+  yellow:getComputedStyle(document.documentElement).getPropertyValue("--yellow"),
+  green:getComputedStyle(document.documentElement).getPropertyValue("--green"),
+  blue:getComputedStyle(document.documentElement).getPropertyValue("--blue"),
+  purple:getComputedStyle(document.documentElement).getPropertyValue("--purple")
+};
+const MAX_MISTAKES = 4;
+let mistakes = 0;
+let remaining=[], selected=new Set(), solved=[];
+
+const gridEl=document.getElementById("grid");
+const solvedEl=document.getElementById("solved");
+const submitBtn=document.getElementById("submitBtn");
+const shuffleBtn=document.getElementById("shuffleBtn");
+const deselectBtn=document.getElementById("deselectBtn");
+const statusEl=document.getElementById("status");
+const toast=document.getElementById("toast");
+const reveal=document.getElementById("reveal");
+const dotsEl=document.getElementById("dots");
+
+document.getElementById("dateLine").textContent =
   new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
 
-const categories = [
- ["Heart","Red","Chocolate","Flowers"],
- ["Goofy","Jerk","Spaceballs","Cats Don’t Dance"],
- ["Diet Coke","Movie Pretzel","Diet Ginger Ale","Eggplant Parm"],
- ["Will","You","Marry","Me"]
-];
-
-let words = categories.flat();
-let selected = [];
-let solved = [];
-
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
-shuffle(words);
 
-function render(){
-  const g=document.getElementById("grid");
-  g.innerHTML="";
-  words.forEach(w=>{
-    if(!solved.includes(w)){
-      const b=document.createElement("button");
-      b.textContent=w;
-      if(selected.includes(w)) b.classList.add("selected");
-      b.onclick=()=>toggle(w);
-      g.appendChild(b);
-    }
-  });
-}
-
-function toggle(w){
-  if(selected.includes(w)) selected=selected.filter(x=>x!==w);
-  else if(selected.length<4) selected.push(w);
+function init(){
+  mistakes=0;
+  solved=[];
+  selected=new Set();
+  remaining=CATEGORIES.flatMap(c=>c.words.map(w=>({word:w,cat:c})));
+  shuffle(remaining);
+  reveal.classList.remove("show");
   render();
 }
-
-function submit(){
-  if(selected.length!==4) return;
-  for(const cat of categories){
-    if(cat.every(w=>selected.includes(w))){
-      solved.push(...selected);
-      selected=[];
-      render();
-      if(solved.length===16)
-        document.getElementById("reveal").classList.add("show");
-      return;
-    }
+function renderDots(){
+  dotsEl.innerHTML="";
+  for(let i=0;i<MAX_MISTAKES;i++){
+    const d=document.createElement("div");
+    d.className="dot"+(i<mistakes?" used":"");
+    dotsEl.appendChild(d);
   }
-  alert("Not quite. Try again!");
 }
+function renderSolved(){
+  solvedEl.innerHTML="";
+  solved.forEach(c=>{
+    const g=document.createElement("div");
+    g.className="group";
+    g.style.background=COLORS[c.color];
+    g.innerHTML=`<div class="label">${c.color}</div><div class="title">${c.title}</div>`;
+    const w=document.createElement("div");w.className="words";
+    c.words.forEach(x=>{const ch=document.createElement("div");ch.className="chip";ch.textContent=x;w.appendChild(ch)});
+    g.appendChild(w);solvedEl.appendChild(g);
+  });
+}
+function renderGrid(){
+  gridEl.innerHTML="";
+  remaining.forEach(i=>{
+    const b=document.createElement("button");
+    b.className="tile"+(selected.has(i.word)?" selected":"");
+    b.textContent=i.word;
+    b.onclick=()=>toggle(i.word);
+    gridEl.appendChild(b);
+  });
+}
+function render(){
+  renderSolved();renderGrid();renderDots();
+  submitBtn.disabled=selected.size!==4;
+  statusEl.textContent=selected.size?`Selected ${selected.size}/4`:"Select 4 words";
+}
+function toggle(w){
+  if(selected.has(w)) selected.delete(w);
+  else if(selected.size<4) selected.add(w);
+  toast.classList.remove("show");
+  render();
+}
+function submit(){
+  if(selected.size!==4) return;
+  const picks=[...selected];
+  const cat=CATEGORIES.find(c=>picks.every(w=>c.words.includes(w)));
+  if(!cat){
+    mistakes++;
+    toast.textContent="Not quite";
+    toast.classList.add("show");
+    selected.clear();
+    render();
+    return;
+  }
+  solved.push(cat);
+  remaining=remaining.filter(i=>!cat.words.includes(i.word));
+  selected.clear();
+  toast.textContent="Correct!";
+  toast.classList.add("show");
+  render();
+  if(solved.length===4) reveal.classList.add("show");
+}
+shuffleBtn.onclick=()=>{shuffle(remaining);render()}
+deselectBtn.onclick=()=>{selected.clear();render()}
+submitBtn.onclick=submit;
 
-function reset(){location.reload()}
-render();
+init();
 </script>
 </body>
 </html>
