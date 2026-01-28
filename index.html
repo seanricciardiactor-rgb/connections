@@ -19,7 +19,6 @@
       --btn-disabled-border:#d6d6d6;
       --btn-disabled-text:#9a9a9a;
 
-      /* category colors */
       --yellow:#f5df6b;
       --green:#bfe3a8;
       --blue:#a9d6f5;
@@ -45,7 +44,7 @@
       padding:0 14px 18px;
     }
 
-    /* Header (hamburger left, 3 icons center) */
+    /* Header */
     .topbar{
       height:54px;
       display:flex;
@@ -59,7 +58,7 @@
       z-index:5;
     }
     .leftSlot{ width:42px; }
-    .rightSlot{ width:42px; } /* spacer to keep center icons centered */
+    .rightSlot{ width:42px; } /* spacer */
     .centerIcons{
       display:flex;
       gap:16px;
@@ -83,7 +82,15 @@
       text-align:center;
       font-size:22px;
       font-weight:520;
-      margin:14px 0 12px;
+      margin:14px 0 6px;
+    }
+    .dateLine{
+      text-align:center;
+      font-size:13px;
+      font-weight:600;
+      color:#6b6b6b;
+      margin:0 0 12px;
+      letter-spacing:.2px;
     }
 
     /* Solved groups */
@@ -189,7 +196,7 @@
     }
     .dot.spent{ opacity:.15; }
 
-    /* Buttons row - smaller, all black/gray (no blue) */
+    /* Buttons row - smaller */
     .controls{
       display:flex;
       gap:10px;
@@ -199,8 +206,8 @@
     .btn{
       flex:1;
       border-radius:999px;
-      padding:10px 10px;     /* smaller */
-      font-size:14.5px;      /* smaller */
+      padding:10px 10px;
+      font-size:14.5px;
       font-weight:600;
       border:2px solid #111;
       background:#fff;
@@ -231,8 +238,19 @@
       border:1px solid #e6e6e6;
       border-radius:16px;
       text-align:center;
+      background:#fff;
     }
     .reveal.show{ display:block; }
+
+    /* Confetti canvas overlay */
+    #confetti{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index:9999;
+    }
 
     @media (max-width:390px){
       .instruction{ font-size:20px; }
@@ -244,6 +262,8 @@
   </style>
 </head>
 <body>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
 <main class="page">
   <header class="topbar" aria-label="Header">
     <div class="leftSlot">
@@ -257,13 +277,11 @@
     </div>
 
     <div class="centerIcons" aria-label="Icons">
-      <!-- lightbulb -->
       <button class="iconBtn" aria-label="Hints" type="button" onclick="noop()">
         <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M9 21h6v-1H9v1zm3-20a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3.3A7 7 0 0 0 12 1zm3 11.9-.8.6V16H9.8v-2.5l-.8-.6A5.5 5.5 0 1 1 15 12.9z" fill="#111"/>
         </svg>
       </button>
-      <!-- stats -->
       <button class="iconBtn" aria-label="Stats" type="button" onclick="noop()">
         <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
           <rect x="4" y="12" width="3" height="8" fill="#111"/>
@@ -271,7 +289,6 @@
           <rect x="17" y="6" width="3" height="14" fill="#111"/>
         </svg>
       </button>
-      <!-- help -->
       <button class="iconBtn" aria-label="Help" type="button" onclick="noop()">
         <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="10" fill="none" stroke="#111" stroke-width="2"/>
@@ -285,6 +302,7 @@
   </header>
 
   <div class="instruction">Create four groups of four!</div>
+  <div class="dateLine" id="dateLine"></div>
 
   <section class="solvedArea" id="solvedArea" aria-label="Solved groups"></section>
 
@@ -329,7 +347,22 @@ const grid=document.getElementById("grid"),
       clearBtn=document.getElementById("clearBtn"),
       submitBtn=document.getElementById("submitBtn"),
       toast=document.getElementById("toast"),
-      reveal=document.getElementById("reveal");
+      reveal=document.getElementById("reveal"),
+      dateLine=document.getElementById("dateLine");
+
+function setDateLine(){
+  // Looks like a daily date line; uses device date for realism
+  const d = new Date();
+  const fmt = new Intl.DateTimeFormat(undefined, { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+  dateLine.textContent = fmt.format(d);
+}
+
+function haptic(pattern){
+  // Works on many Android devices; iOS Safari typically ignores
+  try{
+    if (navigator.vibrate) navigator.vibrate(pattern);
+  }catch(e){}
+}
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 shuffle(remaining);
@@ -379,21 +412,93 @@ function toggle(w){
   if(selected.has(w)) selected.delete(w);
   else if(selected.size<4) selected.add(w);
   toast.textContent="";
+  // small haptic on selection toggle
+  haptic(10);
   for (const btn of grid.querySelectorAll("button.tile")){
     btn.classList.toggle("selected", selected.has(btn.textContent));
   }
   renderControls();
 }
 
+/* Confetti */
+const confettiCanvas = document.getElementById("confetti");
+const ctx = confettiCanvas.getContext("2d");
+let confettiParticles = [];
+let confettiRAF = null;
+
+function resizeConfetti(){
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+  confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+  confettiCanvas.style.width = window.innerWidth + "px";
+  confettiCanvas.style.height = window.innerHeight + "px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize", resizeConfetti);
+resizeConfetti();
+
+function launchConfetti(){
+  confettiParticles = [];
+  const count = 160;
+  const w = window.innerWidth, h = window.innerHeight;
+  for (let i=0;i<count;i++){
+    confettiParticles.push({
+      x: Math.random()*w,
+      y: -20 - Math.random()*h*0.2,
+      vx: (Math.random()-0.5)*2.5,
+      vy: 2.5 + Math.random()*3.0,
+      r: 3 + Math.random()*4,
+      rot: Math.random()*Math.PI,
+      vr: (Math.random()-0.5)*0.2,
+      life: 0,
+      max: 120 + Math.random()*60,
+      color: ["#f5df6b","#bfe3a8","#a9d6f5","#d6b0f3","#111111"][Math.floor(Math.random()*5)]
+    });
+  }
+
+  if (confettiRAF) cancelAnimationFrame(confettiRAF);
+  tickConfetti();
+  // stop after ~2.5s
+  setTimeout(()=>{ confettiParticles=[]; }, 2600);
+}
+
+function tickConfetti(){
+  ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+  const w = window.innerWidth, h = window.innerHeight;
+  confettiParticles = confettiParticles.filter(p => p.life < p.max && p.y < h + 30);
+  for (const p of confettiParticles){
+    p.life++;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.rot += p.vr;
+    // tiny sway
+    p.x += Math.sin((p.life/10)+p.rot)*0.6;
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+    ctx.restore();
+  }
+  if (confettiParticles.length){
+    confettiRAF = requestAnimationFrame(tickConfetti);
+  }else{
+    ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+  }
+}
+
 document.getElementById("shuffleBtn").onclick=()=>{
   shuffle(remaining);
   toast.textContent="";
+  haptic(15);
   renderGrid();
   renderControls();
 };
 document.getElementById("clearBtn").onclick=()=>{
   selected.clear();
   toast.textContent="";
+  haptic(15);
   renderGrid();
   renderControls();
 };
@@ -406,6 +511,7 @@ document.getElementById("submitBtn").onclick=async ()=>{
   if(!cat){
     mistakes=Math.min(4, mistakes+1);
     toast.textContent="Not quite.";
+    haptic([20,30,20]);
     selected.clear();
     renderDots();
     renderGrid();
@@ -419,6 +525,9 @@ document.getElementById("submitBtn").onclick=async ()=>{
     renderControls();
     return;
   }
+
+  // haptic on correct submit
+  haptic([20,20,30]);
 
   const selectedButtons=[...grid.querySelectorAll("button.tile")].filter(b=>selected.has(b.textContent));
   selectedButtons.forEach(b=>b.classList.add("leaving"));
@@ -434,9 +543,13 @@ document.getElementById("submitBtn").onclick=async ()=>{
   if(solved.length===4){
     reveal.classList.add("show");
     toast.textContent="";
+    // bigger celebration haptic + confetti
+    haptic([30,30,60]);
+    launchConfetti();
   }
 };
 
+setDateLine();
 renderAll();
 </script>
 </body>
