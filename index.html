@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Connections</title>
+  <style>
+    :root{
+      --bg:#f6f6f4;
+      --card:#ffffff;
+      --text:#1a1a1a;
+      --muted:#666;
+      --border:#d9d9d9;
+      --yellow:#f5df6b;
+      --green:#bfe3a8;
+      --blue:#a9d6f5;
+      --purple:#d6b0f3;
+      --tile:#efefee;
+      --tileText:#111;
+      --selected:#111;
+      --selectedText:#fff;
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui;background:var(--bg);display:flex;justify-content:center}
+    .wrap{width:min(760px,100%);padding:16px}
+    header{text-align:center;margin-bottom:10px}
+    h1{margin:0;font-size:22px}
+    .sub{color:#666;font-size:13px}
+    .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    button{padding:14px;border-radius:12px;border:1px solid #ccc;font-weight:700;text-transform:uppercase}
+    button.selected{background:#111;color:#fff}
+    .controls{display:flex;justify-content:space-between;margin-top:12px}
+    .reveal{display:none;margin-top:16px;text-align:center}
+    .reveal.show{display:block}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Connections</h1>
+    <div class="sub" id="date"></div>
+  </header>
+  <div class="card">
+    <div class="grid" id="grid"></div>
+    <div class="controls">
+      <button onclick="reset()">New puzzle</button>
+      <button onclick="submit()">Submit</button>
+    </div>
+    <div class="reveal" id="reveal">
+      <h2>💍 Will you marry me?</h2>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById("date").textContent =
+  new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
+
+const categories = [
+ ["Heart","Red","Chocolate","Flowers"],
+ ["Goofy","Jerk","Spaceballs","Cats Don’t Dance"],
+ ["Diet Coke","Movie Pretzel","Diet Ginger Ale","Eggplant Parm"],
+ ["Will","You","Marry","Me"]
+];
+
+let words = categories.flat();
+let selected = [];
+let solved = [];
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+shuffle(words);
+
+function render(){
+  const g=document.getElementById("grid");
+  g.innerHTML="";
+  words.forEach(w=>{
+    if(!solved.includes(w)){
+      const b=document.createElement("button");
+      b.textContent=w;
+      if(selected.includes(w)) b.classList.add("selected");
+      b.onclick=()=>toggle(w);
+      g.appendChild(b);
+    }
+  });
+}
+
+function toggle(w){
+  if(selected.includes(w)) selected=selected.filter(x=>x!==w);
+  else if(selected.length<4) selected.push(w);
+  render();
+}
+
+function submit(){
+  if(selected.length!==4) return;
+  for(const cat of categories){
+    if(cat.every(w=>selected.includes(w))){
+      solved.push(...selected);
+      selected=[];
+      render();
+      if(solved.length===16)
+        document.getElementById("reveal").classList.add("show");
+      return;
+    }
+  }
+  alert("Not quite. Try again!");
+}
+
+function reset(){location.reload()}
+render();
+</script>
+</body>
+</html>
