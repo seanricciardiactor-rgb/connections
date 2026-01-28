@@ -7,39 +7,32 @@
   <meta name="theme-color" content="#ffffff" />
   <style>
     :root{
-      --bg:#ffffff;
       --tile:#eeede8;
       --tile-border:#e6e5df;
-      --tile-text:#111;
       --selected-bg:#5f5f5f;
-      --selected-text:#fff;
-      --muted:#6b6b6b;
-
       --btn-border:#111;
       --btn-disabled-border:#d6d6d6;
       --btn-disabled-text:#9a9a9a;
-
       --yellow:#f5df6b;
       --green:#bfe3a8;
       --blue:#a9d6f5;
       --purple:#d6b0f3;
-
       --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
     }
 
-    *{ box-sizing:border-box; }
+    *{ box-sizing:border-box }
     body{
       margin:0;
-      background:var(--bg);
-      color:#111;
       font-family:var(--font);
       display:flex;
       justify-content:center;
+      background:#fff;
+      color:#111;
     }
 
     .page{
-      width:100%;
       max-width:430px;
+      width:100%;
       padding:0 14px 18px;
     }
 
@@ -50,94 +43,52 @@
       align-items:center;
       justify-content:space-between;
       border-bottom:1px solid #ececec;
-      padding:0 2px;
       position:sticky;
       top:0;
       background:#fff;
       z-index:5;
     }
-    .leftSlot{ width:42px; }
-    .rightSlot{ width:42px; }
-    .centerIcons{
-      display:flex;
-      gap:16px;
-      align-items:center;
-      justify-content:center;
-      flex:1;
-    }
-    .iconBtn{
-      width:42px;height:42px;
-      display:grid;place-items:center;
-      border:0;
-      background:transparent;
-      border-radius:10px;
-    }
-    .iconBtn:active{ background:#f2f2f2; }
+    .leftSlot,.rightSlot{ width:42px }
+    .centerIcons{ display:flex; gap:16px; flex:1; justify-content:center }
+    .iconBtn{ background:none;border:0;width:42px;height:42px;border-radius:10px }
 
     .instruction{
       text-align:center;
       font-size:22px;
-      font-weight:520;
       margin:14px 0 12px;
+      font-weight:520;
     }
 
     /* Solved groups */
-    .solvedArea{ display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+    .solvedArea{ display:flex; flex-direction:column; gap:10px; margin-bottom:12px }
     .solvedGroup{
       border-radius:10px;
       padding:12px;
-      border:1px solid rgba(0,0,0,.06);
       text-align:center;
-      animation: lockIn .26s ease-out;
+      animation:lock .25s ease-out;
     }
-    @keyframes lockIn{
-      from{ opacity:0; transform:translateY(10px) }
-      to{ opacity:1; transform:none }
-    }
-    .solvedTitle{
-      font-weight:900;
-      text-transform:uppercase;
-      font-size:13px;
-      margin-bottom:6px;
-    }
-    .solvedList{
-      font-weight:800;
-      text-transform:uppercase;
-      font-size:12.5px;
-    }
+    @keyframes lock{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+    .solvedTitle{ font-weight:900; font-size:13px; text-transform:uppercase }
+    .solvedList{ font-weight:800; font-size:12.5px; text-transform:uppercase }
 
     /* Grid */
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:10px;
-    }
+    .grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px }
     .tile{
+      height:60px;
+      border-radius:10px;
       border:1px solid var(--tile-border);
       background:var(--tile);
-      color:#111;
-      border-radius:10px;
-      height:60px;
-      padding:6px;
+      font-size:10.6px;
+      font-weight:800;
+      text-transform:uppercase;
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
-      font-weight:800;
-      font-size:10.6px;
-      text-transform:uppercase;
       cursor:pointer;
       word-break:keep-all;
     }
-    .tile.selected{
-      background:#5f5f5f;
-      color:#fff;
-    }
-    .tile.leaving{
-      opacity:0;
-      transform:translateY(10px);
-      transition:.15s;
-    }
+    .tile.selected{ background:var(--selected-bg); color:#fff }
 
     .mistakesRow{
       display:flex;
@@ -146,27 +97,26 @@
       margin:12px 0;
       font-size:18px;
     }
-    .dots{ display:flex; gap:10px; }
-    .dot{
-      width:14px;height:14px;border-radius:50%;
-      background:#111;
-    }
-    .dot.spent{ opacity:.15; }
+    .dots{ display:flex; gap:10px }
+    .dot{ width:14px;height:14px;border-radius:50%;background:#111 }
+    .dot.spent{ opacity:.15 }
 
-    .controls{
-      display:flex;
-      gap:10px;
-    }
+    /* Controls */
+    .controls{ display:flex; gap:10px }
     .btn{
       flex:1;
       border-radius:999px;
       padding:10px;
       font-size:14.5px;
       font-weight:600;
-      border:2px solid #111;
+      border:2px solid var(--btn-border);
       background:#fff;
+      color:#111;
     }
-    .btn:disabled{ border-color:#d6d6d6; color:#9a9a9a; }
+    .btn:disabled{
+      border-color:var(--btn-disabled-border);
+      color:var(--btn-disabled-text);
+    }
 
     .reveal{
       display:none;
@@ -176,7 +126,7 @@
       border-radius:16px;
       text-align:center;
     }
-    .reveal.show{ display:block; }
+    .reveal.show{ display:block }
 
     canvas{
       position:fixed;
@@ -184,28 +134,6 @@
       pointer-events:none;
       z-index:9999;
     }
-  
-    /* Force Shuffle button to be black (no blue states) */
-    #shuffleBtn{
-      color:#111 !important;
-      border-color:#111 !important;
-      background:#fff !important;
-    }
-    #shuffleBtn:active{
-      background:#f2f2f2 !important;
-    }
-
-  
-    /* Force all control buttons to remain black when enabled */
-    .controls .btn{
-      color:#111 !important;
-      border-color:#111 !important;
-      background:#fff !important;
-    }
-    .controls .btn:active{
-      background:#f2f2f2 !important;
-    }
-
   </style>
 </head>
 <body>
@@ -214,29 +142,12 @@
 <main class="page">
   <header class="topbar">
     <div class="leftSlot">
-      <button class="iconBtn">
-        <svg width="24" height="24"><rect x="3" y="6" width="18" height="2"/><rect x="3" y="11" width="18" height="2"/><rect x="3" y="16" width="18" height="2"/></svg>
-      </button>
+      <button class="iconBtn">☰</button>
     </div>
     <div class="centerIcons">
-      <!-- lightbulb -->
-      <button class="iconBtn">
-        <svg width="22" height="22" viewBox="0 0 24 24">
-          <path d="M9 21h6v-1H9v1zm3-20a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3.3A7 7 0 0 0 12 1z" fill="#111"/>
-        </svg>
-      </button>
-      <!-- stats -->
-      <button class="iconBtn">
-        <svg width="22" height="22"><rect x="4" y="12" width="3" height="8"/><rect x="10.5" y="9" width="3" height="11"/><rect x="17" y="6" width="3" height="14"/></svg>
-      </button>
-      <!-- help -->
-      <button class="iconBtn">
-        <svg width="22" height="22" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" fill="none" stroke="#111" stroke-width="2"/>
-          <path d="M9.8 9.2A2.4 2.4 0 0 1 12 7.8c1.3 0 2.4.9 2.4 2.2 0 1.8-2 1.9-2 3.6" fill="none" stroke="#111" stroke-width="2"/>
-          <circle cx="12" cy="17.6" r="1.2" fill="#111"/>
-        </svg>
-      </button>
+      <button class="iconBtn">💡</button>
+      <button class="iconBtn">📊</button>
+      <button class="iconBtn">?</button>
     </div>
     <div class="rightSlot"></div>
   </header>
@@ -259,7 +170,6 @@
 
   <div class="reveal" id="reveal">
     <h2>💍 Will you marry me?</h2>
-    <p>(Look up at me.)</p>
   </div>
 </main>
 
@@ -274,59 +184,61 @@ const CATS=[
 let rem=CATS.flatMap(c=>c.w.map(w=>({w,c})));
 let sel=new Set(),sol=[],mist=0;
 
-const g=document.getElementById("grid"),
-      sA=document.getElementById("solvedArea"),
-      d=document.getElementById("dots"),
-      r=document.getElementById("reveal");
+const grid=document.getElementById("grid"),
+      solvedArea=document.getElementById("solvedArea"),
+      dots=document.getElementById("dots"),
+      clearBtn=document.getElementById("clearBtn"),
+      submitBtn=document.getElementById("submitBtn"),
+      reveal=document.getElementById("reveal");
 
 function shuffle(a){for(let i=a.length-1;i;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}}
 shuffle(rem);
 
 function render(){
-  sA.innerHTML="";
+  solvedArea.innerHTML="";
   sol.forEach(c=>{
-    const e=document.createElement("div");
-    e.className="solvedGroup";
-    e.style.background=c.c;
-    e.innerHTML=`<div class="solvedTitle">${c.t}</div><div class="solvedList">${c.w.join(", ")}</div>`;
-    sA.appendChild(e);
+    const d=document.createElement("div");
+    d.className="solvedGroup";
+    d.style.background=c.c;
+    d.innerHTML=`<div class="solvedTitle">${c.t}</div><div class="solvedList">${c.w.join(", ")}</div>`;
+    solvedArea.appendChild(d);
   });
-  g.innerHTML="";
+
+  grid.innerHTML="";
   rem.forEach(o=>{
     const b=document.createElement("button");
     b.className="tile"+(sel.has(o.w)?" selected":"");
     b.textContent=o.w;
-    b.onclick=()=>{sel.has(o.w)?sel.delete(o.w):sel.size<4&&sel.add(o.w);render()};
-    g.appendChild(b);
+    b.onclick=()=>{
+      sel.has(o.w)?sel.delete(o.w):sel.size<4&&sel.add(o.w);
+      render();
+    };
+    grid.appendChild(b);
   });
-  d.innerHTML="";
-  for(let i=0;i<4;i++){const x=document.createElement("div");x.className="dot"+(i<mist?" spent":"");d.appendChild(x)}
-  document.getElementById("clearBtn").disabled=!sel.size;
-  document.getElementById("submitBtn").disabled=sel.size!==4;
+
+  dots.innerHTML="";
+  for(let i=0;i<4;i++){
+    const d=document.createElement("div");
+    d.className="dot"+(i<mist?" spent":"");
+    dots.appendChild(d);
+  }
+
+  clearBtn.disabled = sel.size===0;
+  submitBtn.disabled = sel.size!==4;
 }
 
 document.getElementById("shuffleBtn").onclick=()=>{shuffle(rem);render()};
 document.getElementById("clearBtn").onclick=()=>{sel.clear();render()};
 document.getElementById("submitBtn").onclick=()=>{
-  const p=[...sel];
-  const c=CATS.find(x=>p.every(w=>x.w.includes(w)));
-  if(!c){mist++;sel.clear();render();return}
-  sol.push(c);rem=rem.filter(x=>!c.w.includes(x.w));sel.clear();render();
-  if(sol.length===4){r.classList.add("show");launchConfetti()}
+  const pick=[...sel];
+  const cat=CATS.find(c=>pick.every(w=>c.w.includes(w)));
+  if(!cat){mist++;sel.clear();render();return}
+  sol.push(cat);
+  rem=rem.filter(x=>!cat.w.includes(x.w));
+  sel.clear();
+  render();
+  if(sol.length===4) reveal.classList.add("show");
 };
-
-// Confetti
-const canvas=document.getElementById("confetti"),ctx=canvas.getContext("2d");
-function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
-window.onresize=resize;resize();
-function launchConfetti(){
-  const parts=Array.from({length:180},()=>({x:Math.random()*innerWidth,y:-20,vy:2+Math.random()*3,vx:(Math.random()-.5)*2,c:["#f5df6b","#bfe3a8","#a9d6f5","#d6b0f3","#111"][Math.random()*5|0]}));
-  (function tick(){
-    ctx.clearRect(0,0,innerWidth,innerHeight);
-    parts.forEach(p=>{p.y+=p.vy;p.x+=p.vx;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,4,6)});
-    if(parts.some(p=>p.y<innerHeight)) requestAnimationFrame(tick);
-  })();
-}
 
 render();
 </script>
