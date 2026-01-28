@@ -134,6 +134,32 @@
       pointer-events:none;
       z-index:9999;
     }
+  
+    /* Force all text to black */
+    body, .instruction, .mistakesRow, .solvedTitle, .solvedList,
+    .tile, .btn, .iconBtn, .reveal, .controls {
+      color:#111 !important;
+    }
+
+    /* Ensure links (if any) never turn blue */
+    a, a:visited, a:active, a:hover {
+      color:#111 !important;
+      text-decoration:none;
+    }
+
+    /* Header icons explicitly black */
+    .iconBtn svg, .iconBtn path, .iconBtn rect, .iconBtn circle {
+      fill:#111 !important;
+      stroke:#111 !important;
+    }
+
+  
+    /* HARD override: header icons pure black */
+    header svg * {
+      fill:#111 !important;
+      stroke:#111 !important;
+    }
+
   </style>
 </head>
 <body>
