@@ -22,6 +22,11 @@
       --btn-disabled-border:#d6d6d6;
       --btn-disabled-text:#9a9a9a;
 
+      --yellow:#f5df6b;
+      --green:#bfe3a8;
+      --blue:#a9d6f5;
+      --purple:#d6b0f3;
+
       --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
     }
 
@@ -78,15 +83,53 @@
 
     svg{ display:block; }
 
-    /* Instruction line */
     .instruction{
       text-align:center;
       font-size:22px;
       font-weight:520;
-      margin: 18px 0 18px;
+      margin: 18px 0 14px;
     }
 
-    /* Grid sized to fit mobile viewport */
+    /* Solved groups area (like NYT: colored bar with title + words) */
+    .solvedArea{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .solvedGroup{
+      border-radius:10px;
+      padding:10px 10px 9px;
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .solvedTitle{
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .solvedWords{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:8px;
+    }
+    .solvedWord{
+      background: rgba(255,255,255,.35);
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:8px;
+      padding:8px 6px;
+      text-align:center;
+      font-weight:800;
+      font-size:12px;
+      letter-spacing:.5px;
+      text-transform:uppercase;
+      line-height:1.05;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+    }
+
+    /* Grid sized to fit mobile viewport; uniform tiles */
     .grid{
       display:grid;
       grid-template-columns: repeat(4, 1fr);
@@ -101,19 +144,28 @@
       color:var(--tile-text);
       border-radius:10px;
 
-      /* tighter so all tiles fit */
-      padding: 14px 6px;
-      min-height: 62px;
+      /* uniform size */
+      height: 60px;
+      padding: 6px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
 
       font-weight:800;
-      font-size:14px;
-      letter-spacing:0.6px;
+      font-size:12px;
+      letter-spacing:0.5px;
       text-transform:uppercase;
       line-height:1.05;
 
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
+
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      white-space:normal;
     }
     button.tile.selected{
       background:var(--selected-bg);
@@ -127,7 +179,7 @@
       align-items:center;
       justify-content:center;
       gap:12px;
-      margin: 14px 0 14px;
+      margin: 12px 0 12px;
       font-size:18px;
       font-weight:520;
     }
@@ -143,7 +195,7 @@
     }
     .dot.spent{ opacity:0.15; }
 
-    /* Buttons row (smaller like reference) */
+    /* Buttons row */
     .controls{
       display:flex;
       gap:12px;
@@ -199,14 +251,14 @@
       font-weight:650;
     }
 
-    /* Small phones: shrink tiles/buttons a touch to ensure all tiles fit */
     @media (max-width: 390px){
       .page{ padding:0 12px 16px; }
-      .instruction{ font-size:20px; margin:16px 0 16px; }
-      button.tile{ min-height:58px; padding:12px 5px; font-size:13px; }
+      .instruction{ font-size:20px; margin:16px 0 12px; }
+      button.tile{ height:56px; font-size:11.5px; }
       .btn{ font-size:15px; padding:11px 8px; }
       .mistakesRow{ font-size:17px; }
       .dot{ width:13px; height:13px; }
+      .solvedWord{ font-size:11.5px; }
     }
   </style>
 </head>
@@ -215,7 +267,6 @@
     <header class="topbar" aria-label="Top bar">
       <div class="leftSlot">
         <button class="iconBtn" aria-label="Menu" type="button" onclick="noop()">
-          <!-- Hamburger -->
           <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
             <rect x="3" y="6" width="18" height="2" fill="#111"/>
             <rect x="3" y="11" width="18" height="2" fill="#111"/>
@@ -225,13 +276,11 @@
       </div>
 
       <div class="centerIcons" aria-label="Icons">
-        <!-- lightbulb -->
         <button class="iconBtn" aria-label="Hints" type="button" onclick="noop()">
           <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M9 21h6v-1H9v1zm3-20a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3.3A7 7 0 0 0 12 1zm3 11.9-.8.6V16H9.8v-2.5l-.8-.6A5.5 5.5 0 1 1 15 12.9z" fill="#111"/>
           </svg>
         </button>
-        <!-- stats/bars -->
         <button class="iconBtn" aria-label="Stats" type="button" onclick="noop()">
           <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
             <rect x="4" y="12" width="3" height="8" fill="#111"/>
@@ -239,7 +288,6 @@
             <rect x="17" y="6" width="3" height="14" fill="#111"/>
           </svg>
         </button>
-        <!-- help (?) -->
         <button class="iconBtn" aria-label="Help" type="button" onclick="noop()">
           <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
             <circle cx="12" cy="12" r="10" fill="none" stroke="#111" stroke-width="2"/>
@@ -250,12 +298,13 @@
       </div>
 
       <div class="rightSlot">
-        <!-- placeholder to balance layout -->
         <div style="width:42px;height:42px;"></div>
       </div>
     </header>
 
     <div class="instruction">Create four groups of four!</div>
+
+    <section class="solvedArea" id="solvedArea" aria-label="Solved groups"></section>
 
     <section class="grid" id="grid" aria-label="Word grid"></section>
 
@@ -281,21 +330,29 @@
 <script>
   function noop(){}
 
-  const GROUPS = [
-    ["Heart","Red","Chocolate","Flowers"],
-    ["Goofy","Jerk","Spaceballs","Cats Don’t Dance"],
-    ["Diet Coke","Movie Pretzel","Diet Ginger Ale","Eggplant Parm"],
-    ["Will","You","Marry","Me"]
+  const CATEGORIES = [
+    { color:"yellow", title:"Valentine’s Day", words:["Heart","Red","Chocolate","Flowers"] },
+    { color:"green",  title:"2nd Date Movies", words:["Goofy","Jerk","Spaceballs","Cats Don’t Dance"] },
+    { color:"blue",   title:"Jesus Meals",     words:["Diet Coke","Movie Pretzel","Diet Ginger Ale","Eggplant Parm"] },
+    { color:"purple", title:"So Much",         words:["Will","You","Marry","Me"] }
   ];
+
+  const COLOR_MAP = {
+    yellow: getComputedStyle(document.documentElement).getPropertyValue('--yellow').trim(),
+    green:  getComputedStyle(document.documentElement).getPropertyValue('--green').trim(),
+    blue:   getComputedStyle(document.documentElement).getPropertyValue('--blue').trim(),
+    purple: getComputedStyle(document.documentElement).getPropertyValue('--purple').trim()
+  };
 
   const MAX_MISTAKES = 4;
   let mistakesUsed = 0;
 
-  let words = GROUPS.flat();
+  let remainingWords = CATEGORIES.flatMap(c => c.words.map(w => ({ word:w, cat:c })));
   let selected = new Set();
-  let solved = 0;
+  let solvedCats = [];
 
   const gridEl = document.getElementById('grid');
+  const solvedAreaEl = document.getElementById('solvedArea');
   const dotsEl = document.getElementById('dots');
   const shuffleBtn = document.getElementById('shuffleBtn');
   const clearBtn = document.getElementById('clearBtn');
@@ -309,8 +366,7 @@
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
   }
-
-  shuffle(words);
+  shuffle(remainingWords);
 
   function renderDots(){
     dotsEl.innerHTML = "";
@@ -321,14 +377,40 @@
     }
   }
 
+  function renderSolved(){
+    solvedAreaEl.innerHTML = "";
+    solvedCats.forEach(cat => {
+      const box = document.createElement('div');
+      box.className = "solvedGroup";
+      box.style.background = COLOR_MAP[cat.color] || "#eee";
+
+      const title = document.createElement('div');
+      title.className = "solvedTitle";
+      title.textContent = cat.title;
+
+      const wordsWrap = document.createElement('div');
+      wordsWrap.className = "solvedWords";
+      cat.words.forEach(w => {
+        const sw = document.createElement('div');
+        sw.className = "solvedWord";
+        sw.textContent = w;
+        wordsWrap.appendChild(sw);
+      });
+
+      box.appendChild(title);
+      box.appendChild(wordsWrap);
+      solvedAreaEl.appendChild(box);
+    });
+  }
+
   function renderGrid(){
     gridEl.innerHTML = "";
-    words.forEach(w => {
+    remainingWords.forEach(item => {
       const b = document.createElement('button');
       b.type = "button";
-      b.className = "tile" + (selected.has(w) ? " selected" : "");
-      b.textContent = w;
-      b.addEventListener('click', () => toggle(w));
+      b.className = "tile" + (selected.has(item.word) ? " selected" : "");
+      b.textContent = item.word;
+      b.addEventListener('click', () => toggle(item.word));
       gridEl.appendChild(b);
     });
   }
@@ -339,53 +421,73 @@
   }
 
   function renderAll(){
+    renderSolved();
     renderGrid();
     renderDots();
     renderControls();
+  }
+
+  function updateSelectionClasses(){
+    for (const btn of gridEl.querySelectorAll('button.tile')) {
+      btn.classList.toggle('selected', selected.has(btn.textContent));
+    }
   }
 
   function toggle(word){
     if(selected.has(word)) selected.delete(word);
     else if(selected.size < 4) selected.add(word);
     toastEl.textContent = "";
-    // Update selection quickly
-    for (const btn of gridEl.querySelectorAll('button.tile')) {
-      btn.classList.toggle('selected', selected.has(btn.textContent));
-    }
+    updateSelectionClasses();
     renderControls();
   }
 
   function deselectAll(){
     selected.clear();
     toastEl.textContent = "";
-    for (const btn of gridEl.querySelectorAll('button.tile')) btn.classList.remove('selected');
+    updateSelectionClasses();
     renderControls();
   }
 
   function submit(){
     if(selected.size !== 4) return;
+
     const picks = [...selected];
-    const correct = GROUPS.some(g => g.every(w => picks.includes(w)));
-    if(!correct){
+    const cat = CATEGORIES.find(c => picks.every(w => c.words.includes(w)));
+
+    if(!cat){
       mistakesUsed = Math.min(MAX_MISTAKES, mistakesUsed + 1);
       renderDots();
       toastEl.textContent = "Not quite.";
       deselectAll();
       return;
     }
-    // remove the 4 picked tiles (NYT-like behavior)
-    words = words.filter(w => !picks.includes(w));
-    solved++;
+
+    if(solvedCats.some(s => s.title === cat.title)){
+      deselectAll();
+      return;
+    }
+
+    // Keep solved category at top, remove from remaining grid
+    solvedCats.push(cat);
+    remainingWords = remainingWords.filter(x => !cat.words.includes(x.word));
+
     selected.clear();
     toastEl.textContent = "Correct!";
     renderAll();
-    if(solved === 4){
+
+    if(solvedCats.length === 4){
       revealEl.classList.add("show");
       toastEl.textContent = "";
     }
   }
 
-  shuffleBtn.addEventListener('click', () => { shuffle(words); toastEl.textContent=""; renderGrid(); renderControls(); });
+  shuffleBtn.addEventListener('click', () => {
+    shuffle(remainingWords);
+    toastEl.textContent = "";
+    renderGrid();
+    renderControls();
+    updateSelectionClasses();
+  });
   clearBtn.addEventListener('click', deselectAll);
   submitBtn.addEventListener('click', submit);
 
