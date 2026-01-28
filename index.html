@@ -8,25 +8,19 @@
   <style>
     :root{
       --bg:#ffffff;
-
       --tile:#eeede8;
       --tile-border:#e6e5df;
       --tile-text:#111;
-
       --selected-bg:#5f5f5f;
       --selected-text:#fff;
-
       --muted:#6b6b6b;
-
       --btn-border:#111;
       --btn-disabled-border:#d6d6d6;
       --btn-disabled-text:#9a9a9a;
-
       --yellow:#f5df6b;
       --green:#bfe3a8;
       --blue:#a9d6f5;
       --purple:#d6b0f3;
-
       --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
     }
 
@@ -43,8 +37,8 @@
 
     .page{
       width:100%;
-      max-width: 430px;
-      padding: 0 14px 18px;
+      max-width:430px;
+      padding:0 14px 18px;
     }
 
     .topbar{
@@ -53,43 +47,20 @@
       align-items:center;
       justify-content:space-between;
       border-bottom:1px solid #ececec;
-      padding: 0 2px;
+      padding:0 2px;
       position:sticky;
       top:0;
       background:#fff;
       z-index:5;
     }
-    .iconBtn{
-      width:42px;height:42px;
-      display:grid;place-items:center;
-      border:0;
-      background:transparent;
-      padding:0;
-      border-radius:10px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .iconBtn:active{ background:#f2f2f2; }
-
-    .centerIcons{
-      display:flex;
-      gap:16px;
-      align-items:center;
-      justify-content:center;
-      flex:1;
-    }
-    .leftSlot{ width:42px; }
-    .rightSlot{ width:42px; display:flex; justify-content:flex-end; }
-
-    svg{ display:block; }
 
     .instruction{
       text-align:center;
       font-size:22px;
       font-weight:520;
-      margin: 18px 0 14px;
+      margin:18px 0 14px;
     }
 
-    /* Solved groups: centered category title + comma-separated words (no chips) */
     .solvedArea{
       display:flex;
       flex-direction:column;
@@ -98,7 +69,7 @@
     }
     .solvedGroup{
       border-radius:10px;
-      padding:12px 12px 11px;
+      padding:12px;
       border:1px solid rgba(0,0,0,.06);
       text-align:center;
     }
@@ -107,50 +78,43 @@
       text-transform:uppercase;
       letter-spacing:.6px;
       font-size:13px;
-      margin:0 0 6px;
+      margin-bottom:6px;
     }
     .solvedList{
       font-weight:800;
       text-transform:uppercase;
       letter-spacing:.5px;
       font-size:12.5px;
-      line-height:1.15;
     }
 
     .grid{
       display:grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns:repeat(4,1fr);
       gap:10px;
     }
 
     button.tile{
       appearance:none;
-      -webkit-appearance:none;
       border:1px solid var(--tile-border);
       background:var(--tile);
       color:var(--tile-text);
       border-radius:10px;
-
-      height: 60px;
-      padding: 6px;
-
+      height:60px;
+      padding:6px;
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
-
       font-weight:800;
-      font-size:11.2px; /* slightly smaller to fit long words */
+      font-size:10.6px; /* reduced slightly to keep long words on one line */
       letter-spacing:0.45px;
       text-transform:uppercase;
       line-height:1.05;
-
       cursor:pointer;
       user-select:none;
-      -webkit-tap-highlight-color: transparent;
-
-      overflow-wrap:anywhere;
-      word-break:break-word;
+      word-break:keep-all;
+      overflow-wrap:normal;
+      hyphens:none;
       white-space:normal;
     }
     button.tile.selected{
@@ -161,315 +125,134 @@
 
     .mistakesRow{
       display:flex;
-      align-items:center;
       justify-content:center;
       gap:12px;
-      margin: 12px 0 12px;
+      margin:12px 0;
       font-size:18px;
       font-weight:520;
     }
-    .dots{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
+    .dots{ display:flex; gap:10px; }
     .dot{
       width:14px;height:14px;border-radius:50%;
       background:#111;
-      opacity:1;
     }
-    .dot.spent{ opacity:0.15; }
+    .dot.spent{ opacity:.15; }
 
     .controls{
       display:flex;
       gap:12px;
-      justify-content:space-between;
-      margin-top: 2px;
     }
     .btn{
       flex:1;
       border-radius:999px;
-      padding: 12px 10px;
+      padding:12px 10px;
       font-size:16px;
       font-weight:600;
-      border:2px solid var(--btn-border);
+      border:2px solid #111;
       background:#fff;
-      color:#111;
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
     }
     .btn:disabled{
-      border-color:var(--btn-disabled-border);
-      color:var(--btn-disabled-text);
-      cursor:not-allowed;
-      background:#fff;
-    }
-
-    .toast{
-      margin-top: 10px;
-      min-height: 20px;
-      text-align:center;
-      color:var(--muted);
-      font-size:15px;
-      font-weight:600;
+      border-color:#d6d6d6;
+      color:#9a9a9a;
     }
 
     .reveal{
       display:none;
-      margin-top: 18px;
-      padding: 16px 14px;
+      margin-top:18px;
+      padding:16px;
       border:1px solid #e6e6e6;
       border-radius:16px;
       text-align:center;
     }
     .reveal.show{ display:block; }
-    .reveal h2{
-      margin:0;
-      font-size:30px;
-      font-weight:800;
-    }
-    .reveal p{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-weight:650;
-    }
-
-    @media (max-width: 390px){
-      .page{ padding:0 12px 16px; }
-      .instruction{ font-size:20px; margin:16px 0 12px; }
-      button.tile{ height:56px; font-size:10.8px; }
-      .btn{ font-size:15px; padding:11px 8px; }
-      .mistakesRow{ font-size:17px; }
-      .dot{ width:13px; height:13px; }
-      .solvedList{ font-size:12px; }
-    }
   </style>
 </head>
 <body>
-  <main class="page">
-    <header class="topbar" aria-label="Top bar">
-      <div class="leftSlot">
-        <button class="iconBtn" aria-label="Menu" type="button" onclick="noop()">
-          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="3" y="6" width="18" height="2" fill="#111"/>
-            <rect x="3" y="11" width="18" height="2" fill="#111"/>
-            <rect x="3" y="16" width="18" height="2" fill="#111"/>
-          </svg>
-        </button>
-      </div>
-
-      <div class="centerIcons" aria-label="Icons">
-        <button class="iconBtn" aria-label="Hints" type="button" onclick="noop()">
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 21h6v-1H9v1zm3-20a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3.3A7 7 0 0 0 12 1zm3 11.9-.8.6V16H9.8v-2.5l-.8-.6A5.5 5.5 0 1 1 15 12.9z" fill="#111"/>
-          </svg>
-        </button>
-        <button class="iconBtn" aria-label="Stats" type="button" onclick="noop()">
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="4" y="12" width="3" height="8" fill="#111"/>
-            <rect x="10.5" y="9" width="3" height="11" fill="#111"/>
-            <rect x="17" y="6" width="3" height="14" fill="#111"/>
-          </svg>
-        </button>
-        <button class="iconBtn" aria-label="Help" type="button" onclick="noop()">
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="12" cy="12" r="10" fill="none" stroke="#111" stroke-width="2"/>
-            <path d="M9.8 9.2A2.4 2.4 0 0 1 12 7.8c1.3 0 2.4.9 2.4 2.2 0 1.8-2 1.9-2 3.6" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="12" cy="17.6" r="1.2" fill="#111"/>
-          </svg>
-        </button>
-      </div>
-
-      <div class="rightSlot">
-        <div style="width:42px;height:42px;"></div>
-      </div>
-    </header>
-
-    <div class="instruction">Create four groups of four!</div>
-
-    <section class="solvedArea" id="solvedArea" aria-label="Solved groups"></section>
-
-    <section class="grid" id="grid" aria-label="Word grid"></section>
-
-    <div class="mistakesRow" aria-label="Mistakes remaining">
-      <div>Mistakes Remaining:</div>
-      <div class="dots" id="dots"></div>
-    </div>
-
-    <div class="controls" aria-label="Controls">
-      <button class="btn" id="shuffleBtn" type="button">Shuffle</button>
-      <button class="btn" id="clearBtn" type="button" disabled>Deselect All</button>
-      <button class="btn" id="submitBtn" type="button" disabled>Submit</button>
-    </div>
-
-    <div class="toast" id="toast" aria-live="polite"></div>
-
-    <div class="reveal" id="reveal">
-      <h2>💍 Will you marry me?</h2>
-      <p>(Look up at me.)</p>
-    </div>
-  </main>
+<main class="page">
+  <div class="instruction">Create four groups of four!</div>
+  <section class="solvedArea" id="solvedArea"></section>
+  <section class="grid" id="grid"></section>
+  <div class="mistakesRow">
+    <div>Mistakes Remaining:</div>
+    <div class="dots" id="dots"></div>
+  </div>
+  <div class="controls">
+    <button class="btn" id="shuffleBtn">Shuffle</button>
+    <button class="btn" id="clearBtn" disabled>Deselect All</button>
+    <button class="btn" id="submitBtn" disabled>Submit</button>
+  </div>
+  <div class="reveal" id="reveal">
+    <h2>💍 Will you marry me?</h2>
+  </div>
+</main>
 
 <script>
-  function noop(){}
+const CATEGORIES=[
+ {color:"yellow",title:"Valentine’s Day",words:["Heart","Red","Chocolate","Flowers"]},
+ {color:"green",title:"2nd Date Movies",words:["Goofy","Jerk","Spaceballs","Cats Don’t Dance"]},
+ {color:"blue",title:"Jesus Meals",words:["Diet Coke","Movie Pretzel","Diet Ginger Ale","Eggplant Parm"]},
+ {color:"purple",title:"So Much",words:["Will","You","Marry","Me"]}
+];
+const COLORS={yellow:"#f5df6b",green:"#bfe3a8",blue:"#a9d6f5",purple:"#d6b0f3"};
+let remaining=CATEGORIES.flatMap(c=>c.words.map(w=>({w,c})));
+let selected=new Set(), solved=[], mistakes=0;
+const grid=document.getElementById("grid"),
+      solvedArea=document.getElementById("solvedArea"),
+      dots=document.getElementById("dots"),
+      clearBtn=document.getElementById("clearBtn"),
+      submitBtn=document.getElementById("submitBtn"),
+      reveal=document.getElementById("reveal");
 
-  const CATEGORIES = [
-    { color:"yellow", title:"Valentine’s Day", words:["Heart","Red","Chocolate","Flowers"] },
-    { color:"green",  title:"2nd Date Movies", words:["Goofy","Jerk","Spaceballs","Cats Don’t Dance"] },
-    { color:"blue",   title:"Jesus Meals",     words:["Diet Coke","Movie Pretzel","Diet Ginger Ale","Eggplant Parm"] },
-    { color:"purple", title:"So Much",         words:["Will","You","Marry","Me"] }
-  ];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+shuffle(remaining);
 
-  const COLOR_MAP = {
-    yellow: getComputedStyle(document.documentElement).getPropertyValue('--yellow').trim(),
-    green:  getComputedStyle(document.documentElement).getPropertyValue('--green').trim(),
-    blue:   getComputedStyle(document.documentElement).getPropertyValue('--blue').trim(),
-    purple: getComputedStyle(document.documentElement).getPropertyValue('--purple').trim()
-  };
-
-  const MAX_MISTAKES = 4;
-  let mistakesUsed = 0;
-
-  let remainingWords = CATEGORIES.flatMap(c => c.words.map(w => ({ word:w, cat:c })));
-  let selected = new Set();
-  let solvedCats = [];
-
-  const gridEl = document.getElementById('grid');
-  const solvedAreaEl = document.getElementById('solvedArea');
-  const dotsEl = document.getElementById('dots');
-  const shuffleBtn = document.getElementById('shuffleBtn');
-  const clearBtn = document.getElementById('clearBtn');
-  const submitBtn = document.getElementById('submitBtn');
-  const toastEl = document.getElementById('toast');
-  const revealEl = document.getElementById('reveal');
-
-  function shuffle(arr){
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-  }
-  shuffle(remainingWords);
-
-  function renderDots(){
-    dotsEl.innerHTML = "";
-    for(let i=0;i<MAX_MISTAKES;i++){
-      const d = document.createElement('div');
-      d.className = "dot" + (i < mistakesUsed ? " spent" : "");
-      dotsEl.appendChild(d);
-    }
-  }
-
-  function renderSolved(){
-    solvedAreaEl.innerHTML = "";
-    solvedCats.forEach(cat => {
-      const box = document.createElement('div');
-      box.className = "solvedGroup";
-      box.style.background = COLOR_MAP[cat.color] || "#eee";
-
-      const title = document.createElement('div');
-      title.className = "solvedTitle";
-      title.textContent = cat.title;
-
-      const list = document.createElement('div');
-      list.className = "solvedList";
-      list.textContent = cat.words.join(", ");
-
-      box.appendChild(title);
-      box.appendChild(list);
-      solvedAreaEl.appendChild(box);
-    });
-  }
-
-  function renderGrid(){
-    gridEl.innerHTML = "";
-    remainingWords.forEach(item => {
-      const b = document.createElement('button');
-      b.type = "button";
-      b.className = "tile" + (selected.has(item.word) ? " selected" : "");
-      b.textContent = item.word;
-      b.addEventListener('click', () => toggle(item.word));
-      gridEl.appendChild(b);
-    });
-  }
-
-  function renderControls(){
-    clearBtn.disabled = selected.size === 0;
-    submitBtn.disabled = selected.size !== 4;
-  }
-
-  function renderAll(){
-    renderSolved();
-    renderGrid();
-    renderDots();
-    renderControls();
-  }
-
-  function updateSelectionClasses(){
-    for (const btn of gridEl.querySelectorAll('button.tile')) {
-      btn.classList.toggle('selected', selected.has(btn.textContent));
-    }
-  }
-
-  function toggle(word){
-    if(selected.has(word)) selected.delete(word);
-    else if(selected.size < 4) selected.add(word);
-    toastEl.textContent = "";
-    updateSelectionClasses();
-    renderControls();
-  }
-
-  function deselectAll(){
-    selected.clear();
-    toastEl.textContent = "";
-    updateSelectionClasses();
-    renderControls();
-  }
-
-  function submit(){
-    if(selected.size !== 4) return;
-
-    const picks = [...selected];
-    const cat = CATEGORIES.find(c => picks.every(w => c.words.includes(w)));
-
-    if(!cat){
-      mistakesUsed = Math.min(MAX_MISTAKES, mistakesUsed + 1);
-      renderDots();
-      toastEl.textContent = "Not quite.";
-      deselectAll();
-      return;
-    }
-
-    if(solvedCats.some(s => s.title === cat.title)){
-      deselectAll();
-      return;
-    }
-
-    solvedCats.push(cat);
-    remainingWords = remainingWords.filter(x => !cat.words.includes(x.word));
-
-    selected.clear();
-    toastEl.textContent = "Correct!";
-    renderAll();
-
-    if(solvedCats.length === 4){
-      revealEl.classList.add("show");
-      toastEl.textContent = "";
-    }
-  }
-
-  shuffleBtn.addEventListener('click', () => {
-    shuffle(remainingWords);
-    toastEl.textContent = "";
-    renderGrid();
-    renderControls();
-    updateSelectionClasses();
+function render(){
+  grid.innerHTML="";
+  remaining.forEach(o=>{
+    const b=document.createElement("button");
+    b.className="tile"+(selected.has(o.w)?" selected":"");
+    b.textContent=o.w;
+    b.onclick=()=>toggle(o.w);
+    grid.appendChild(b);
   });
-  clearBtn.addEventListener('click', deselectAll);
-  submitBtn.addEventListener('click', submit);
-
-  renderAll();
+  dots.innerHTML="";
+  for(let i=0;i<4;i++){
+    const d=document.createElement("div");
+    d.className="dot"+(i<mistakes?" spent":"");
+    dots.appendChild(d);
+  }
+  clearBtn.disabled=selected.size===0;
+  submitBtn.disabled=selected.size!==4;
+}
+function renderSolved(){
+  solvedArea.innerHTML="";
+  solved.forEach(c=>{
+    const box=document.createElement("div");
+    box.className="solvedGroup";
+    box.style.background=COLORS[c.color];
+    box.innerHTML=`<div class="solvedTitle">${c.title}</div>
+                   <div class="solvedList">${c.words.join(", ")}</div>`;
+    solvedArea.appendChild(box);
+  });
+}
+function toggle(w){
+  selected.has(w)?selected.delete(w):selected.size<4&&selected.add(w);
+  render();
+}
+document.getElementById("clearBtn").onclick=()=>{selected.clear();render()};
+document.getElementById("submitBtn").onclick=()=>{
+  const pick=[...selected];
+  const cat=CATEGORIES.find(c=>pick.every(w=>c.words.includes(w)));
+  if(!cat){mistakes++;selected.clear();render();return;}
+  solved.push(cat);
+  remaining=remaining.filter(o=>!cat.words.includes(o.w));
+  selected.clear();
+  renderSolved();
+  render();
+  if(solved.length===4)reveal.classList.add("show");
+};
+document.getElementById("shuffleBtn").onclick=()=>{shuffle(remaining);render()};
+render();
 </script>
 </body>
 </html>
